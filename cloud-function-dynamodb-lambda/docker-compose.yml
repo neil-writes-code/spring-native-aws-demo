@@ -1,0 +1,7 @@
+version: '3.1'
+services:
+  lambda:
+    image: dyniri/spring-native-aws-builder:latest
+    command: bash -c "./mvnw -ntp package -Pnative -DskipTests"
+    volumes:
+      - ./:/app
