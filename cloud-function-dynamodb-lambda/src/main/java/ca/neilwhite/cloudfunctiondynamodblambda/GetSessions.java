@@ -24,8 +24,10 @@ public class GetSessions implements Function<Request, Response> {
 
     @Override
     public Response apply(Request request) {
+        String userId = request.getUserId().toLowerCase();
+
         Map<String, AttributeValue> expressionValues = new HashMap<>();
-        expressionValues.put(":userId", AttributeValue.builder().s(request.getUserId().toLowerCase()).build());
+        expressionValues.put(":userId", AttributeValue.builder().s(userId).build());
 
         QueryRequest queryRequest = QueryRequest.builder()
                 .tableName(tableName)
