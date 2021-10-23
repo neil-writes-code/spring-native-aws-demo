@@ -24,17 +24,8 @@ public class GetSessions implements Function<Request, Response> {
 
     @Override
     public Response apply(Request request) {
-        return new Response(findSessions(request.getUserId()));
-    }
-
-    /**
-     * Performs a query for all sessions by the provided userId
-     * @param userId
-     * @return List
-     */
-    private List<Session> findSessions(String userId) {
         Map<String, AttributeValue> expressionValues = new HashMap<>();
-        expressionValues.put(":userId", AttributeValue.builder().s(userId.toLowerCase()).build());
+        expressionValues.put(":userId", AttributeValue.builder().s(request.getUserId().toLowerCase()).build());
 
         QueryRequest queryRequest = QueryRequest.builder()
                 .tableName(tableName)
@@ -43,30 +34,11 @@ public class GetSessions implements Function<Request, Response> {
 
         List<Map<String, AttributeValue>> queryResponse = dynamoDbClient.query(queryRequest).items();
 
-        return queryResponse.isEmpty() ? List.of()
+        List<Session> sessions = queryResponse.isEmpty() ? List.of()
                 : queryResponse.stream()
-                .map(this::transformSession)
+                .map(Session::from)
                 .collect(Collectors.toList());
-    }
 
-    /**
-     * Transforms all the string values back to their original types
-     * @param values
-     * @return  {@link Session}
-     */
-    private Session transformSession(Map<String, AttributeValue> values) {
-        Session session = new Session();
-
-        session.setSessionId(values.get("sessionId").s());
-        session.setTimestamp(Long.parseLong(values.get("timestamp").n()));
-        session.setParticipants(values.get("participants").ss());
-
-        Map<String, AttributeValue> resultValues = values.get("results").m();
-        Map<String, Integer> results = new HashMap<>();
-
-        resultValues.forEach((k, v) -> results.put(k, Integer.parseInt(v.n())));
-        session.setResults(results);
-
-        return session;
+        return new Response(sessions);
     }
 }
