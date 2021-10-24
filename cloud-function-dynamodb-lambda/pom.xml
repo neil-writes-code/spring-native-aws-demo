@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.5</version>
+		<version>2.5.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>ca.neilwhite</groupId>
@@ -15,7 +15,7 @@
 	<description>Native Spring Cloud Function for AWS Lambda, with DynamoDB demo</description>
 	<properties>
 		<java.version>11</java.version>
-		<spring-native.version>0.10.3</spring-native.version>
+		<spring-native.version>0.10.4</spring-native.version>
 		<spring-cloud.version>2020.0.4</spring-cloud.version>
 		<testcontainers.version>1.16.0</testcontainers.version>
 	</properties>
@@ -150,7 +150,7 @@
 					<plugin>
 						<groupId>org.graalvm.buildtools</groupId>
 						<artifactId>native-maven-plugin</artifactId>
-						<version>0.9.3</version>
+						<version>0.9.5</version>
 						<executions>
 							<execution>
 								<id>test-native</id>
