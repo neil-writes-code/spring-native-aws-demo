@@ -1,0 +1,73 @@
+frameworkVersion: '2'
+
+service: cloud-function-demo
+
+provider:
+  lambdaHashingVersion: 20201221
+  name: aws
+  stackName: cloud-function-demo-stack
+  apiName: cloud-function-demo-api
+  region: < enter region here >
+  runtime: provided
+  memorySize: 128
+  timeout: 3
+  tracing:
+    lambda: true
+    apiGateway: true
+
+package:
+  individually: true
+
+functions:
+  getSessions:
+    name: get-sessions
+    handler: getSessions
+    role: lambdaDynamoDBReadOnly
+    package:
+      artifact: ./target/cloud-function-dynamodb-lambda-0.0.1-SNAPSHOT-native.zip
+    events:
+      - http:
+          integration: lambda
+          path: /sessions
+          method: get
+          request:
+            parameters:
+              querystrings:
+                userId: false
+            template:
+              application/json: '{ "userId": "$input.params(''userId'')" }'
+
+resources:
+  Resources:
+    lambdaDynamoDBReadOnly:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: LambdaDynamoDBReadOnly
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+          - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
+
+    sessionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: sessions
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: sessionId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: sessionId
+            KeyType: RANGE
