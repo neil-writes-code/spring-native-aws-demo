@@ -1,6 +1,6 @@
 version: '3.1'
 services:
   lambda:
-    image: dyniri/spring-native-aws-builder:java-11
+    image: dyniri/spring-native-aws-builder:amd64-java-11
     volumes:
       - ./:/app
