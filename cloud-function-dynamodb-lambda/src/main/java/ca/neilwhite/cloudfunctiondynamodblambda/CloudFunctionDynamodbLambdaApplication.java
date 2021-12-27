@@ -3,29 +3,31 @@ package ca.neilwhite.cloudfunctiondynamodblambda;
 import ca.neilwhite.cloudfunctiondynamodblambda.models.Request;
 import ca.neilwhite.cloudfunctiondynamodblambda.models.Response;
 import ca.neilwhite.cloudfunctiondynamodblambda.models.Session;
-import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.cloud.function.context.FunctionRegistration;
-import org.springframework.cloud.function.context.FunctionType;
-import org.springframework.cloud.function.context.FunctionalSpringApplication;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.nativex.hint.NativeHint;
 import org.springframework.nativex.hint.SerializationHint;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
+@NativeHint
 @SerializationHint(types = {Request.class, Response.class, Session.class})
-@SpringBootConfiguration
-public class CloudFunctionDynamodbLambdaApplication implements ApplicationContextInitializer<GenericApplicationContext> {
+@SpringBootApplication
+public class CloudFunctionDynamodbLambdaApplication {
+    Region awsRegion = Region.US_EAST_1;
 
-	public static void main(String[] args) {
-		FunctionalSpringApplication.run(CloudFunctionDynamodbLambdaApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(CloudFunctionDynamodbLambdaApplication.class, args);
+    }
 
-	@Override
-	public void initialize(GenericApplicationContext applicationContext) {
-		DynamoDbClient dynamoDbClient = DynamoDbClient.builder().region(Region.CA_CENTRAL_1).build();
+    @Bean
+    public DynamoDbClient dynamoDbClient() {
+        return DynamoDbClient.builder().region(awsRegion).build();
+    }
 
-		applicationContext.registerBean("getSessions", FunctionRegistration.class,
-				() -> new FunctionRegistration<>(new GetSessions("sessions", dynamoDbClient)).type(FunctionType.from(Request.class).to(Response.class)));
-	}
+    @Bean
+    public String tableName(){
+        return "sessions";
+    }
 }

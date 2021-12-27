@@ -3,6 +3,7 @@ package ca.neilwhite.cloudfunctiondynamodblambda;
 import ca.neilwhite.cloudfunctiondynamodblambda.models.Request;
 import ca.neilwhite.cloudfunctiondynamodblambda.models.Response;
 import ca.neilwhite.cloudfunctiondynamodblambda.models.Session;
+import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Component
 public class GetSessions implements Function<Request, Response> {
     private final String tableName;
     private final DynamoDbClient dynamoDbClient;

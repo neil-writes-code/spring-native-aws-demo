@@ -7,7 +7,7 @@ provider:
   name: aws
   stackName: cloud-function-demo-stack
   apiName: cloud-function-demo-api
-  region: < enter region here >
+  region: us-east-1
   runtime: provided
   memorySize: 128
   timeout: 3
@@ -22,7 +22,7 @@ functions:
   getSessions:
     name: get-sessions
     handler: getSessions
-    role: lambdaDynamoDBReadOnly
+    role: LambdaDynamoDBReadOnly
     package:
       artifact: ./target/cloud-function-dynamodb-lambda-0.0.1-SNAPSHOT-native.zip
     events:
@@ -39,7 +39,7 @@ functions:
 
 resources:
   Resources:
-    lambdaDynamoDBReadOnly:
+    LambdaDynamoDBReadOnly:
       Type: AWS::IAM::Role
       Properties:
         RoleName: LambdaDynamoDBReadOnly
