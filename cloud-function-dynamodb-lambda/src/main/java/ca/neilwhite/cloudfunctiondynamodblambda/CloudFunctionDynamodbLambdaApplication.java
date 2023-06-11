@@ -12,10 +12,10 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 @NativeHint
-@SerializationHint(types = {Request.class, Response.class, Session.class})
+@SerializationHint(types = { Request.class, Response.class, Session.class })
 @SpringBootApplication
 public class CloudFunctionDynamodbLambdaApplication {
-    Region awsRegion = Region.US_EAST_1;
+    Region awsRegion = Region.AP_NORTHEAST_1;
 
     public static void main(String[] args) {
         SpringApplication.run(CloudFunctionDynamodbLambdaApplication.class, args);
@@ -27,7 +27,7 @@ public class CloudFunctionDynamodbLambdaApplication {
     }
 
     @Bean
-    public String tableName(){
+    public String tableName() {
         return "sessions";
     }
 }
